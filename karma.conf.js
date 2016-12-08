@@ -17,7 +17,7 @@ module.exports = function(karma) {
 		exclude: [],
 
 		preprocessors: {
-			'tests.bundle.ts': ['coverage', webpack, 'sourcemap']
+			'tests.bundle.ts': ['coverage', 'webpack', 'sourcemap']
 		},
 
 		reporters: ['mocha', 'coverage'],
