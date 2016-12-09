@@ -1,1 +1,1 @@
-export * from 'src/dnd.module';
+export * from './src';

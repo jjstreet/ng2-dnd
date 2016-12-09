@@ -1,27 +1,23 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
-		"declaration": true,
-		"stripInternal": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"module": "commonjs",
+		"lib": [
+			"dom",
+			"es2015"
+		],
+		"module": "es2015",
 		"moduleResolution": "node",
-		"noEmitOnError": false,
-		"outDir": "./release",
-		"rootDir": ".",
-		"lib": ["es2015", "dom"],
-		"target": "es5",
-		"skipLibCheck": true,
-		"types": [
-			"node",
-			"jasmine"
-		]
+		"outDir": "dist",
+		"sourceMap": true,
+		"target": "es5"
 	},
-	"exclude": [
-		"node_modules"
-	],
 	"angularCompilerOptions": {
-		"strictMetaDataEmit": true
-	}
+		"skipTemplateCodegen": true,
+		"skipMetadataEmit": false
+	},
+	"include": [
+		"src",
+		"testing"
+	]
 }

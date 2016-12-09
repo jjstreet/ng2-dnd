@@ -1,84 +1,69 @@
-var path = require('path');
+module.exports = function (config) {
+	src = 'src/';
+	srcJs = 'dist/src/';
 
-module.exports = function(karma) {
-	'use strict';
+	testing = 'testing/';
+	testingJs = 'dist/testing/';
 
-	karma.set({
-		basePath: __dirname,
-
+	config.set({
+		basePath: '',
 		frameworks: ['jasmine'],
 
+		plugins: [
+			require('karma-jasmine'),
+			require('karma-chrome-launcher'),
+			require('karma-jasmine-html-reporter')
+		],
+
+		client: {
+			builtPaths: [srcJs, testingJs],
+			clearContext: false
+		},
+
 		files: [
-			{
-				pattern: 'tests.bundle.ts', watched: false
-			}
+			'node_modules/systemjs/dist/system.src.js',
+
+			'node_modules/core-js/client/shim.js',
+			'node_modules/reflect-metadata/Reflect.js',
+
+			'node_modules/zone.js/dist/zone.js',
+			'node_modules/zone.js/dist/long-stack-trace-zone.js',
+			'node_modules/zone.js/dist/proxy.js',
+			'node_modules/zone.js/dist/sync-test.js',
+			'node_modules/zone.js/dist/jasmine-patch.js',
+			'node_modules/zone.js/dist/async-test.js',
+			'node_modules/zone.js/dist/fake-async-test.js',
+
+			{ pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
+			{ pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
+
+			{ pattern: 'node_modules/@angular/**/*.js', included: false, watched: false },
+			{ pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
+
+			{ pattern: 'systemjs.config.js', included: false, watched: false },
+			{ pattern: 'systemjs.config.extras.js', included: false, watched: false },
+			'karma-test-shim.js', // optionally extend SystemJS mapping e.g., with barrels
+
+			// Source paths, maps, transpiled code
+			{ pattern: srcJs + '**/*.js', included: false, watched: true },
+			{ pattern: testingJs + '**/*.js', included: false, watched: true },
+
+			// Debugging with source maps and dev tools
+			{ pattern: src + '**/*.ts', included: false, watched: false },
+			{ pattern: srcJs + '**/*.js.map', included: false, watched: false },
+			{ pattern: testing + '**/*.ts', included: false, watched: false },
+			{ pattern: testingJs + '**/*.js.map', included: false, watched: false}
 		],
 
 		exclude: [],
+		preprocessors: {},
+		reporters: ['progress', 'kjhtml'],
 
-		preprocessors: {
-			'tests.bundle.ts': ['coverage', 'webpack', 'sourcemap']
-		},
-
-		reporters: ['mocha', 'coverage'],
-
-		coverageReporter: {
-			dir: 'coverage/',
-			reporters: [
-				{ type: 'text-summary' },
-				{ type: 'json' },
-				{ type: 'html' }
-			]
-		},
-
-		browsers: ['Chrome'],
-
-		port: 9018,
-		runnerPort: 9101,
+		port: 9876,
 		colors: true,
-		logLevel: karma.LOG_INFO,
+		logLevel: config.LOG_INFO,
 		autoWatch: true,
-		singleRun: false,
-		webpackServer: { noInfo: true },
-		webpack: {
-			devtool: 'inline-source-map',
-			resolve: {
-				root: __dirname,
-				extensions: ['', '.ts', '.js']
-			}
-		},
-		module: {
-			preLoaders: [
-				{
-					test: /\.ts$/,
-					loader: 'tslint-loader',
-					exclude: [
-						/node_modules/
-					]
-				}
-			],
-			loaders: [
-				{
-					test: /\.ts?$/,
-					exclude: /(node_modules)/,
-					loader: 'ts'
-				}
-			],
-			postLoaders: [
-				{
-					test: /\.(js|ts)$/, loader: 'istanbul-instrumenter',
-					include: path.resolve(__dirname, 'src'),
-					exclude: [
-						/\.(e2e|spec|bundle)\.ts$/,
-						/node_modules/
-					]
-				}
-			]
-		},
-		tslint: {
-			emitErrors: false,
-			failOnHint: false,
-			resourcePath: 'src'
-		}
-	});
+		browsers: ['Chrome'],
+		singleRun: false
+	})
 };

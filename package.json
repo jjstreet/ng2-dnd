@@ -1,72 +1,68 @@
 {
-	"name": "ng2-dnd",
-	"version": "0.0.1",
-	"description": "Dnd module for Angular 2+",
-	"scripts": {
-		"karma": "karma start --single-run",
-		"test:unit": "npm run karma",
-		"test:ngc": "ngc -p ./spec/ngc/tsconfig.ngc.json",
-		"test": "npm run test:unit && npm run test:ngc",
-		 "clean:pre": "rimraf release",
-		 "clean:post": "rimraf \"src/**/*.ngfactory.ts\"",
-		 "copy": "cpy LICENSE package.json README.md release",
-		 "build:js": "ngc -p tsconfig.dist.json",
-		 "build:umd": "rollup -c rollup.config.js",
-		 "build:uglify": "uglifyjs -c --screw-ie8 --comments -o ./release/bundles/store.min.umd.js ./release/bundles/store.umd.js",
-		 "prebuild": "npm run test && npm run clean:pre",
-		 "postbuild": "npm run clean:post && npm run copy",
-		 "build": "npm run build:js && npm run build:umd && npm run build:uglify"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jjstreet/ng2-dnd.git"
-	},
-	"keywords": [
-		"Angular2",
-		"Dnd",
-		"Drag",
-		"Drop"
-	],
-	"author": "Josh Street",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/jjstreet/ng2-dnd/issues"
-	},
-	"homepage": "https://github.com/jjstreet/ng2-dnd#readme",
-	"peerDependencies": {
-		"@angular/core": "^2.0.0"
-	},
-	"devDependencies": {
-		"@angular/common": "^2.0.0",
-		"@angular/compiler": "^2.0.0",
-		"@angular/compiler-cli": "^0.6.0",
-		"@angular/core": "^2.0.0",
-		"@angular/platform-browser": "^2.0.0",
-		"@angular/platform-browser-dynamic": "^2.0.0",
-		"@angular/platform-server": "^2.0.0",
-		"@types/jasmine": "^2.2.33",
-		"@types/node": "^6.0.38",
-		"awesome-typescript-loader": "^2.2.1",
-		"core-js": "^2.4.1",
-		"cpy-cli": "^1.0.1",
-		"istanbul-instrumenter-loader": "^0.2.0",
-		"jasmine": "^2.5.0",
-		"karma": "^1.2.0",
-		"karma-chrome-launcher": "^2.0.0",
-		"karma-coverage": "^1.1.1",
-		"karma-jasmine": "^1.0.2",
-		"karma-mocha-reporter": "^2.1.0",
-		"karma-sourcemap-loader": "^0.3.7",
-		"karma-webpack": "^1.8.0",
-		"rimraf": "^2.5.4",
-		"rollup": "^0.34.13",
-		"rxjs": "^5.0.0-beta.11",
-		"ts-loader": "^0.8.2",
-		"tslint": "^3.15.1",
-		"tslint-loader": "^2.1.5",
-		"typescript": "^2.0.2",
-		"uglifyjs": "^2.4.10",
-		"webpack": "^2.1.0-beta.21",
-		"zone.js": "^0.6.17"
-	}
+  "name": "ng2-dnd",
+  "version": "0.0.1",
+  "description": "Dnd module for Angular 2+",
+  "scripts": {
+    "build": "npm run build:rimraf && npm run build:ngc && npm run build:rollup && npm run build:uglify && npm run build:package.json",
+    "build:rimraf": "rimraf dist/*",
+    "build:ngc": "ngc -p tsconfig.json",
+    "build:rollup": "node ./scripts/rollup.js",
+    "build:uglify": "node ./scripts/uglify.js",
+    "build:package.json": "node ./scripts/prepare-package-json.js",
+	"test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
+    "test-once": "tsc && karma start karma.conf.js --single-run",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjstreet/ng2-dnd.git"
+  },
+  "keywords": [
+    "Angular2",
+    "Dnd",
+    "Drag",
+    "Drop"
+  ],
+  "author": "Josh Street",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jjstreet/ng2-dnd/issues"
+  },
+  "homepage": "https://github.com/jjstreet/ng2-dnd#readme",
+  "peerDependencies": {
+    "@angular/common": "^2.2.4",
+    "@angular/core": "^2.2.4",
+    "rxjs": "^5.0.0-rc.4"
+  },
+  "devDependencies": {
+    "@angular/common": "^2.3.0",
+    "@angular/compiler": "^2.3.0",
+    "@angular/compiler-cli": "^2.3.0",
+    "@angular/core": "^2.3.0",
+    "@angular/platform-browser": "^2.3.0",
+    "@angular/platform-browser-dynamic": "^2.3.0",
+	"@types/node": "^6.0.46",
+	"@types/jasmine": "^2.5.36",
+    "camelcase": "^4.0.0",
+	"concurrently": "^3.1.0",
+	"jasmine-core": "~2.4.1",
+	"karma": "^1.3.0",
+	"karma-chrome-launcher": "^2.0.0",
+	"karma-cli": "^1.0.1",
+	"karma-jasmine": "^1.0.2",
+	"karma-jasmine-html-reporter": "^0.2.2",
+    "rollup": "^0.36.4",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0",
+	"reflect-metadata": "^0.1.8",
+    "rimraf": "^2.5.4",
+    "rxjs": "^5.0.0-rc.4",
+	"systemjs": "0.19.40",
+    "ts-node": "^1.6.1",
+	"tslint": "^3.15.1",
+    "typescript": "~2.1.0",
+    "uglify-js": "^2.7.5",
+    "zone.js": "^0.7"
+  }
 }
