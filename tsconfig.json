@@ -1,12 +1,13 @@
 {
 	"compilerOptions": {
+		"rootDir":".",
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"lib": [
 			"dom",
 			"es2015"
 		],
-		"module": "es2015",
+		"module": "commonjs",
 		"moduleResolution": "node",
 		"outDir": "dist",
 		"sourceMap": true,
@@ -16,7 +17,7 @@
 		"skipTemplateCodegen": true,
 		"skipMetadataEmit": false
 	},
-	"files": [
-		"index.ts"
+	"exclude": [
+		"node_modules"
 	]
 }

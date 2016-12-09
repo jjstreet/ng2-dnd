@@ -4,13 +4,13 @@
   "description": "Dnd module for Angular 2+",
   "scripts": {
     "build": "npm run clean && npm run build:ngc && npm run build:rollup && npm run build:uglify && npm run build:package.json",
-    "build:ngc": "ngc -p tsconfig.json",
+    "build:ngc": "ngc -p tsconfig.build.json",
     "build:rollup": "node ./scripts/rollup.js",
     "build:uglify": "node ./scripts/uglify.js",
     "build:package.json": "node ./scripts/prepare-package-json.js",
 	"clean": "rimraf dist/*",
-	"test": "tsc -p tsconfig.test.json && concurrently \"tsc -w -p tsconfig.test.json\" \"karma start karma.conf.js\"",
-    "test-once": "tsc -p tsconfig.test.json && karma start karma.conf.js --single-run",
+	"test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
+    "test-once": "tsc && karma start karma.conf.js --single-run",
     "tsc": "tsc",
     "tsc:w": "tsc -w"
   },
