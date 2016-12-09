@@ -18,6 +18,9 @@ import { DndModule } from '../src/dnd.module';
 })
 export class TestComponent {
 	item: any;
+
+	@ViewChild(DndItem)
+	dndItem: DndItem;
 }
 
 describe('DndItem', () => {
@@ -52,6 +55,6 @@ describe('DndItem', () => {
 
 		fixture.detectChanges();
 
-
+		expect(fixture.componentInstance.dndItem.dndItem).toBe(item);
 	});
 });

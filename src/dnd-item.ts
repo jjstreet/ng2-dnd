@@ -1,5 +1,6 @@
 import {
-	Directive
+	Directive,
+	Input
 } from '@angular/core';
 
 @Directive({
@@ -7,4 +8,5 @@ import {
 })
 export class DndItem {
 
+	@Input() dndItem: any;
 }
