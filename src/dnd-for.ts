@@ -52,7 +52,7 @@ export class DndFor implements DoCheck {
 
 	private placeholder: EmbeddedViewRef<any>;
 
-	private dndForOf: any;
+	private oldIterable: any;
 
 	constructor(
 			private dndContainer: DndContainer,
@@ -63,21 +63,21 @@ export class DndFor implements DoCheck {
 	) {}
 
 	ngDoCheck() {
-		const value = this.getItems();
-		if (this.dndForOf !== value && !this.differ && value) {
-			this.dndForOf = value;
+		const iterable = this.getItems();
+		if (this.oldIterable !== iterable && !this.differ && iterable) {
 			try {
-				this.differ = this.differs.find(this.dndForOf).create(this.cdr, this.dndForTrackBy);
+				this.differ = this.differs.find(iterable).create(this.cdr, this.dndForTrackBy);
 			} catch (e) {
 				throw new Error(
-						`Cannot find a differ supporting object '${value}' of type ` +
-						`'${getTypeNameForDebugging(value)}'. DndFor only supports ` +
+						`Cannot find a differ supporting object '${iterable}' of type ` +
+						`'${getTypeNameForDebugging(iterable)}'. DndFor only supports ` +
 						`binding to Iterables such as Arrays.`);
 			}
+			this.oldIterable = iterable;
 		}
 
 		if (this.differ) {
-			const changes = this.differ.diff(this.getItems());
+			const changes = this.differ.diff(iterable);
 			if (changes) {
 				this.applyChanges(changes);
 			}
