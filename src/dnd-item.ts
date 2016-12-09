@@ -9,4 +9,7 @@ import {
 export class DndItem {
 
 	@Input() dndItem: any;
+	@Input() dndTargets: string[] = [];
+	@Input() dndDraggable: boolean = true;
+	@Input() dndDragThreshold: number = 3;
 }
