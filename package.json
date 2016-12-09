@@ -9,7 +9,7 @@
     "build:uglify": "node ./scripts/uglify.js",
     "build:package.json": "node ./scripts/prepare-package-json.js",
 	"clean": "rimraf dist/*",
-	"test": "tsc && concurrently \"tsc -w -p tsconfig.test.json\" \"karma start karma.conf.js\"",
+	"test": "tsc -p tsconfig.test.json && concurrently \"tsc -w -p tsconfig.test.json\" \"karma start karma.conf.js\"",
     "test-once": "tsc -p tsconfig.test.json && karma start karma.conf.js --single-run",
     "tsc": "tsc",
     "tsc:w": "tsc -w"
