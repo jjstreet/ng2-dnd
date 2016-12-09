@@ -10,7 +10,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 
 // builtPaths: root paths for output ("built") files
 // get from karma.config.js, then prefix with '/base/' (default is 'app/')
-var builtPaths = (__karma__.config.builtPaths || ['src/', 'testing/'])
+var builtPaths = (__karma__.config.builtPaths || ['dist/src/', 'dist/testing/'])
 	.map(function(p) { return '/base/'+p;});
 
 __karma__.loaded = function () { };
@@ -37,8 +37,10 @@ var allSpecFiles = Object.keys(window.__karma__.files)
 
 System.config({
 	baseURL: 'base',
+	/*
 	// Extend usual application package list with test folder
 	packages: { 'testing': { main: 'index.js', defaultExtension: 'js' } },
+	*/
 
 	// Assume npm: is set in `paths` in systemjs.config
 	// Map the angular testing umd bundles

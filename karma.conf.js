@@ -1,10 +1,4 @@
 module.exports = function (config) {
-	src = 'src/';
-	srcJs = 'dist/src/';
-
-	testing = 'testing/';
-	testingJs = 'dist/testing/';
-
 	config.set({
 		basePath: '',
 		frameworks: ['jasmine'],
@@ -16,7 +10,7 @@ module.exports = function (config) {
 		],
 
 		client: {
-			builtPaths: [srcJs, testingJs],
+			builtPaths: ['dist/src', 'dist/testing'],
 			clearContext: false
 		},
 
@@ -44,15 +38,13 @@ module.exports = function (config) {
 			{ pattern: 'systemjs.config.extras.js', included: false, watched: false },
 			'karma-test-shim.js', // optionally extend SystemJS mapping e.g., with barrels
 
-			// Source paths, maps, transpiled code
-			{ pattern: srcJs + '**/*.js', included: false, watched: true },
-			{ pattern: testingJs + '**/*.js', included: false, watched: true },
+			{ pattern: 'dist/src/**/*.js', included: false, watched: true },
+			{ pattern: 'dist/testing/**/*.js', included: false, watched: true },
 
-			// Debugging with source maps and dev tools
-			{ pattern: src + '**/*.ts', included: false, watched: false },
-			{ pattern: srcJs + '**/*.js.map', included: false, watched: false },
-			{ pattern: testing + '**/*.ts', included: false, watched: false },
-			{ pattern: testingJs + '**/*.js.map', included: false, watched: false}
+			{ pattern: 'src/**/*.ts', included: false, watched: false },
+			{ pattern: 'dist/src/**/*.map.js', included: false, watched: false },
+			{ pattern: 'testing/**/*.ts', included: false, watched: false },
+			{ pattern: 'dist/testing/**/*.js', included: false, watched: false },
 		],
 
 		exclude: [],
