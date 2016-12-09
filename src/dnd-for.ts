@@ -14,6 +14,8 @@ import {
 	ViewContainerRef
 } from '@angular/core';
 
+import { DndContainer } from './dnd-container';
+
 function getTypeNameForDebugging(type: any): string {
 	return type['name'] || typeof type;
 }
@@ -40,18 +42,20 @@ class RecordViewTuple {
 }
 
 @Directive({
-	selector: '[dndFor][dndForOf]'
+	selector: '[dndFor]'
 })
-export class DndFor implements DoCheck, OnChanges {
+export class DndFor implements DoCheck {
 
-	@Input() dndForOf: any;
 	@Input() dndForTrackBy: DndTrackByFn;
 
 	private differ: IterableDiffer = null;
 
 	private placeholder: EmbeddedViewRef<any>;
 
+	private dndForOf: any;
+
 	constructor(
+			private dndContainer: DndContainer,
 			private viewContainerRef: ViewContainerRef,
 			private templateRef: TemplateRef<DndForRow>,
 			private differs: IterableDiffers,
@@ -59,28 +63,32 @@ export class DndFor implements DoCheck, OnChanges {
 	) {}
 
 	ngDoCheck() {
+		const value = this.getItems();
+		if (this.dndForOf !== value && !this.differ && value) {
+			this.dndForOf = value;
+			try {
+				this.differ = this.differs.find(this.dndForOf).create(this.cdr, this.dndForTrackBy);
+			} catch (e) {
+				throw new Error(
+						`Cannot find a differ supporting object '${value}' of type ` +
+						`'${getTypeNameForDebugging(value)}'. DndFor only supports ` +
+						`binding to Iterables such as Arrays.`);
+			}
+		}
+
 		if (this.differ) {
-			const changes = this.differ.diff(this.dndForOf);
+			const changes = this.differ.diff(this.getItems());
 			if (changes) {
 				this.applyChanges(changes);
 			}
 		}
 	}
 
-	ngOnChanges(changes: SimpleChanges) {
-		if ('dndForOf' in changes) {
-			const value = changes['dndForOf'].currentValue;
-			if (!this.differ && value) {
-				try {
-					this.differ = this.differs.find(value).create(this.cdr, this.dndForTrackBy);
-				} catch (e) {
-					throw new Error(
-							`Cannot find a differ supporting object '${value}' of type ` +
-							`'${getTypeNameForDebugging(value)}'. DndFor only supports ` +
-							`binding to Iterables such as Arrays.`);
-				}
-			}
+	private getItems(): any {
+		if (this.dndContainer) {
+			return this.dndContainer.dndItems;
 		}
+		return this.dndContainer;
 	}
 
 	private applyChanges(changes: DefaultIterableDiffer) {
