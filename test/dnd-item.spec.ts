@@ -8,8 +8,8 @@ import {
 	TestBed
 } from '@angular/core/testing';
 
-import { DndItem } from './dnd-item';
-import { DndModule } from './dnd.module';
+import { DndItem } from 'src/dnd-item';
+import { DndModule } from 'src/dnd.module';
 
 @Component({
 	selector: 'test-cmp',

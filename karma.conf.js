@@ -10,7 +10,7 @@ module.exports = function (config) {
 		],
 
 		client: {
-			builtPaths: ['dist/src', 'dist/testing'],
+			builtPaths: ['dist'],
 			clearContext: false
 		},
 
@@ -38,13 +38,11 @@ module.exports = function (config) {
 			{ pattern: 'systemjs.config.extras.js', included: false, watched: false },
 			'karma-test-shim.js', // optionally extend SystemJS mapping e.g., with barrels
 
-			{ pattern: 'dist/src/**/*.js', included: false, watched: true },
-			{ pattern: 'dist/testing/**/*.js', included: false, watched: true },
+			{ pattern: 'dist/**/*.js', included: false, watched: true },
 
 			{ pattern: 'src/**/*.ts', included: false, watched: false },
-			{ pattern: 'dist/src/**/*.map.js', included: false, watched: false },
-			{ pattern: 'testing/**/*.ts', included: false, watched: false },
-			{ pattern: 'dist/testing/**/*.js', included: false, watched: false },
+			{ pattern: 'test/**/*.ts', included: false, watched: false },
+			{ pattern: 'dist/**/*.js.map', included: false, watched: false },
 		],
 
 		exclude: [],

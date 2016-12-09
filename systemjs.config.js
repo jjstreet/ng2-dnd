@@ -7,7 +7,7 @@
 		// map tells the System loader where to look for things
 		map: {
 			// our src
-			src: 'src',
+			src: 'dist/src',
 
 			// angular bundles
 			'@angular/core': 'npm:@angular/core/bundles/core.umd.js',
