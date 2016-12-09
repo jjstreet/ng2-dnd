@@ -63,7 +63,7 @@ export class DndFor implements DoCheck {
 	) {}
 
 	ngDoCheck() {
-		const iterable = this.getItems();
+		const iterable = this.getIterable();
 		if (this.oldIterable !== iterable && !this.differ && iterable) {
 			try {
 				this.differ = this.differs.find(iterable).create(this.cdr, this.dndForTrackBy);
@@ -84,11 +84,11 @@ export class DndFor implements DoCheck {
 		}
 	}
 
-	private getItems(): any {
+	private getIterable(): any {
 		if (this.dndContainer) {
 			return this.dndContainer.dndItems;
 		}
-		return this.dndContainer;
+		return undefined;
 	}
 
 	private applyChanges(changes: DefaultIterableDiffer) {
