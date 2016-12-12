@@ -66,14 +66,38 @@ describe('DndItem', () => {
 		return getTestDebugElement().query(By.directive(DndItem));
 	}
 
-	function doDrag() {
-		getDndItem().onMouseDown(createMouseEvent('mousedown'));
-		getDndItem().onMouseMove(createMouseEvent('mousemove', 20, 20));
+	function triggerMouseDown(x = 0, y = 0) {
+		const el: HTMLElement = getDndItemDebugElement().nativeElement;
+		const clientRect = el.getBoundingClientRect();
+
+		(<EventTarget> el).dispatchEvent(new MouseEvent('mousedown', <MouseEventInit>{
+			buttons: 1,
+			clientX: clientRect.left + x,
+			clientY: clientRect.top + y,
+			bubbles: true,
+			cancelable: true
+		}));
 	}
 
-	function doDragDrop() {
-		doDrag();
-		getDndItem().onMouseUp(createMouseEvent('mouseup'));
+	function triggerMouseMove(x = 0, y = 0) {
+		const el: HTMLElement = getDndItemDebugElement().nativeElement;
+		const clientRect = el.getBoundingClientRect();
+
+		document.dispatchEvent(new MouseEvent('mousemove', <MouseEventInit>{
+			buttons: 1,
+			clientX: clientRect.left + x,
+			clientY: clientRect.top + y,
+			bubbles: true,
+			cancelable: true
+		}));
+	}
+
+	function triggerMouseUp() {
+		document.dispatchEvent(new MouseEvent('mouseup', <MouseEventInit>{
+			buttons: 1,
+			bubbles: true,
+			cancelable: true
+		}));
 	}
 
 	beforeEach(() => {
@@ -164,7 +188,7 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		getDndItem().onMouseDown(createMouseEvent('mousedown'));
+		triggerMouseDown();
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(false);
@@ -174,8 +198,8 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		getDndItem().onMouseDown(createMouseEvent('mousedown'));
-		getDndItem().onMouseMove(createMouseEvent('mousemove', 3));
+		triggerMouseDown();
+		triggerMouseMove(3);
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(false);
@@ -185,8 +209,8 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		getDndItem().onMouseDown(createMouseEvent('mousedown'));
-		getDndItem().onMouseMove(createMouseEvent('mousemove', undefined, 3));
+		triggerMouseDown();
+		triggerMouseMove(0, 3);
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(false);
@@ -196,8 +220,8 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		getDndItem().onMouseDown(createMouseEvent('mousedown'));
-		getDndItem().onMouseMove(createMouseEvent('mousemove', 20));
+		triggerMouseDown();
+		triggerMouseMove(20);
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(true);
@@ -207,8 +231,8 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		getDndItem().onMouseDown(createMouseEvent('mousedown'));
-		getDndItem().onMouseMove(createMouseEvent('mousemove', undefined, 20));
+		triggerMouseDown();
+		triggerMouseMove(0, 20);
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(true);
@@ -218,8 +242,13 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		doDragDrop();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
 		fixture.detectChanges();
+
+		expect(getDndItem().dragging).toBe(true);
+
+		triggerMouseUp();
 
 		expect(getDndItem().dragging).toBe(false);
 	}));
@@ -228,7 +257,8 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		doDrag();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['position']).toBe('absolute');
@@ -237,10 +267,11 @@ describe('DndItem', () => {
 	it('should have original position styling after mouse up', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
-
 		const originalPositionStyle = getDndItemDebugElement().styles['position'];
 
-		doDragDrop();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
+		triggerMouseUp();
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['position']).toEqual(originalPositionStyle);
@@ -249,13 +280,13 @@ describe('DndItem', () => {
 	it('should set width styling to offsetWidth when dragging', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
-
 		const originalWidth = getDndItemDebugElement().nativeElement.offsetWidth;
 
-		doDrag();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
 		fixture.detectChanges();
 
-		expect(getDndItemDebugElement().styles['width']).toEqual(`${originalWidth}px`);
+		expect(getDndItemDebugElement().styles['width']).toEqual(originalWidth + 'px');
 	}));
 
 	it('should remove width styling after mouse up', async(() => {
@@ -263,7 +294,9 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 		const originalWidthStyle = getDndItemDebugElement().styles['width'];
 
-		doDragDrop();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
+		triggerMouseUp();
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['width']).toEqual(originalWidthStyle);
@@ -272,13 +305,13 @@ describe('DndItem', () => {
 	it('should set height styling to offsetHeight when dragging', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
-
 		const originalHeight = getDndItemDebugElement().nativeElement.offsetHeight;
 
-		doDrag();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
 		fixture.detectChanges();
 
-		expect(getDndItemDebugElement().styles['height']).toEqual(`${originalHeight}px`);
+		expect(getDndItemDebugElement().styles['height']).toEqual(originalHeight + 'px');
 	}));
 
 	it('should remove height styling after mouse up', async(() => {
@@ -286,7 +319,9 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 		const originalHeightStyle = getDndItemDebugElement().styles['height'];
 
-		doDragDrop();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
+		triggerMouseUp();
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['height']).toEqual(originalHeightStyle);
@@ -296,7 +331,8 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		doDrag();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['pointerEvents']).toBe('none');
@@ -305,22 +341,22 @@ describe('DndItem', () => {
 	it('should have original pointer events styling after mouse up', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
-
 		const originalPointerEvents = getDndItemDebugElement().styles['pointerEvents'];
 
-		doDragDrop();
+		triggerMouseDown();
+		triggerMouseMove(20, 20);
+		triggerMouseUp();
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['pointerEvents']).toEqual(originalPointerEvents);
 	}));
+
+	xit('should update top style of the object based on mouse movement during dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		const top = getDndItemDebugElement().nativeElement.offsetTop + 20;
+
+		expect(getDndItemDebugElement().styles['top']).toEqual(top + 'px');
+	}));
 });
-
-const MARGIN_OFFSET = 8;
-
-function createMouseEvent(eventType: string, x = 0, y = 0) {
-	return new MouseEvent(eventType, <MouseEventInit>{
-		buttons: 1,
-		clientX: MARGIN_OFFSET + x,
-		clientY: MARGIN_OFFSET + y
-	});
-}

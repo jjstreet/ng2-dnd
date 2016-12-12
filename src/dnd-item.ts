@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 
 import {
-	getMouseRelativeTo,
 	Point
 } from './shared';
 
@@ -85,8 +84,11 @@ export class DndItem implements OnDestroy {
 		if (!this.dragging && this.canStartDragging(event) && event.buttons === 1) {
 			this.startDrag();
 		}
-		event.preventDefault();
-		event.stopPropagation();
+		if (this.dragging) {
+			this.updatePosition(event);
+			event.preventDefault();
+			event.stopPropagation();
+		}
 	}
 
 	onMouseUp(event: MouseEvent) {
@@ -136,7 +138,13 @@ export class DndItem implements OnDestroy {
 				|| Math.abs(this.clickPosition.y - mouse.y) > this.dndDragThreshold;
 	}
 
+	private updatePosition(event: MouseEvent): void {
+		this.styleLeft = (event.clientX - this.clickPosition.x) + 'px';
+		this.styleTop = (event.clientY - this.clickPosition.y) + 'px';
+	}
+
 	private getRelativeMousePosition(event): Point {
-		return getMouseRelativeTo(event, this.el);
+		const rect: ClientRect = this.el.getBoundingClientRect();
+		return new Point(event.clientX - rect.left, event.clientY - rect.top);
 	}
 }
