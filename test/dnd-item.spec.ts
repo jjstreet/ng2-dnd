@@ -316,11 +316,11 @@ describe('DndItem', () => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
+		triggerMouseDown();
 		const el = getDndItemDebugElement().nativeElement;
 		const event: MouseEvent = createMouseEvent('mousemove', el, 20, 20);
 		spyOn(event, 'stopPropagation');
 		spyOn(event, 'preventDefault');
-		triggerMouseDown();
 		(<EventTarget> el).dispatchEvent(event);
 
 		expect(event.stopPropagation).toHaveBeenCalled();
