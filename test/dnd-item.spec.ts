@@ -63,7 +63,7 @@ describe('DndItem', () => {
 	}
 
 	function getDndItemDebugElement(): DebugElement {
-		return getTestDebugElement().query(By.css('div'));
+		return getTestDebugElement().query(By.directive(DndItem));
 	}
 
 	function doDrag() {
