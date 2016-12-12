@@ -266,6 +266,16 @@ describe('DndItem', () => {
 		expect(getDndItem().dragging).toBe(false);
 	}));
 
+	it('should not be dragging during mouse move if element was not target of mouse down', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		triggerMouseMove(20, 20);
+		fixture.detectChanges();
+
+		expect(getDndItem().dragging).toBe(false);
+	}));
+
 	it('should have absolute position styling when dragging', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
@@ -300,6 +310,21 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['width']).toEqual(originalWidth + 'px');
+	}));
+
+	it('should capture mouse move events when dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		const el = getDndItemDebugElement().nativeElement;
+		const event: MouseEvent = createMouseEvent('mousemove', el, 20, 20);
+		spyOn(event, 'stopPropagation');
+		spyOn(event, 'preventDefault');
+		triggerMouseDown();
+		(<EventTarget> el).dispatchEvent(event);
+
+		expect(event.stopPropagation).toHaveBeenCalled();
+		expect(event.preventDefault).toHaveBeenCalled();
 	}));
 
 	it('should remove width styling after mouse up', async(() => {

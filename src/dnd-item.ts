@@ -93,10 +93,9 @@ export class DndItem implements OnDestroy {
 
 	onMouseUp(event: MouseEvent) {
 		if (this.dragging) {
-			this.dragStarted = false;
-			this.removeDragStyles();
+			this.stopDrag();
+			this.detachDragListeners();
 		}
-		this.detachDragListeners();
 	}
 
 	private startDrag(): void {
@@ -112,6 +111,7 @@ export class DndItem implements OnDestroy {
 	}
 
 	private stopDrag(): void {
+		this.dragStarted = false;
 		this.removeDragStyles();
 	}
 
