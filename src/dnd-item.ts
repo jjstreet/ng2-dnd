@@ -104,7 +104,9 @@ export class DndItem implements OnDestroy {
 
 	private applyDragStyles(): void {
 		this.stylePosition = 'absolute';
+		this.stylePointerEvents = 'none';
 		this.styleWidth = this.elementWidth + 'px';
+		this.styleHeight = this.elementHeight + 'px';
 	}
 
 	private stopDrag(): void {
@@ -113,7 +115,9 @@ export class DndItem implements OnDestroy {
 
 	private removeDragStyles(): void {
 		this.stylePosition = null;
+		this.stylePointerEvents = null;
 		this.styleWidth = null;
+		this.styleHeight = null;
 	}
 
 	private attachDragListeners(): void {

@@ -19,7 +19,7 @@ import { DndModule } from '../src/dnd.module';
 
 @Component({
 	selector: 'test-cmp',
-	template: '<div [dndItem]="item"></div>'
+	template: '<div [dndItem]="item">Drag Me</div>'
 })
 export class TestComponent {
 	item: any;
@@ -36,7 +36,7 @@ const INPUTS_TEMPLATE = `
 			[dndItem]="item"
 			[dndTargets]="targets"
 			[dndDraggable]="draggable"
-			[dndDragThreshold]="dragThreshold"></div>`;
+			[dndDragThreshold]="dragThreshold">Drag Me</div>`;
 
 function createDefaultTestComponent(): ComponentFixture<TestComponent> {
 	return TestBed.createComponent(TestComponent);
@@ -261,12 +261,57 @@ describe('DndItem', () => {
 	it('should remove width styling after mouse up', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
-		const originalWidthStyle = getDndItemDebugElement().styles['position'];
+		const originalWidthStyle = getDndItemDebugElement().styles['width'];
 
 		doDragDrop();
 		fixture.detectChanges();
 
 		expect(getDndItemDebugElement().styles['width']).toEqual(originalWidthStyle);
+	}));
+
+	it('should set height styling to offsetHeight when dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		const originalHeight = getDndItemDebugElement().nativeElement.offsetHeight;
+
+		doDrag();
+		fixture.detectChanges();
+
+		expect(getDndItemDebugElement().styles['height']).toEqual(`${originalHeight}px`);
+	}));
+
+	it('should remove height styling after mouse up', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+		const originalHeightStyle = getDndItemDebugElement().styles['height'];
+
+		doDragDrop();
+		fixture.detectChanges();
+
+		expect(getDndItemDebugElement().styles['height']).toEqual(originalHeightStyle);
+	}));
+
+	it('should ignore pointer events when dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		doDrag();
+		fixture.detectChanges();
+
+		expect(getDndItemDebugElement().styles['pointerEvents']).toBe('none');
+	}));
+
+	it('should have original pointer events styling after mouse up', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		const originalPointerEvents = getDndItemDebugElement().styles['pointerEvents'];
+
+		doDragDrop();
+		fixture.detectChanges();
+
+		expect(getDndItemDebugElement().styles['pointerEvents']).toEqual(originalPointerEvents);
 	}));
 });
 
