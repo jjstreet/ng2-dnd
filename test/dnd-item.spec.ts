@@ -66,30 +66,29 @@ describe('DndItem', () => {
 		return getTestDebugElement().query(By.directive(DndItem));
 	}
 
-	function triggerMouseDown(x = 0, y = 0) {
-		const el: HTMLElement = getDndItemDebugElement().nativeElement;
-		const clientRect = el.getBoundingClientRect();
-
-		(<EventTarget> el).dispatchEvent(new MouseEvent('mousedown', <MouseEventInit>{
+	function createMouseEvent(eventType: string, element: HTMLElement = undefined, x = 0, y = 0) {
+		let offset: {x: number, y: number} = {x: 0, y: 0};
+		if (element) {
+			const rect = element.getBoundingClientRect();
+			offset = {x: rect.left, y: rect.top};
+		}
+		return new MouseEvent(eventType, <MouseEventInit>{
 			buttons: 1,
-			clientX: clientRect.left + x,
-			clientY: clientRect.top + y,
+			clientX: offset.x + x,
+			clientY: offset.y + y,
 			bubbles: true,
 			cancelable: true
-		}));
+		});
+	}
+
+	function triggerMouseDown(x = 0, y = 0) {
+		const el: HTMLElement = getDndItemDebugElement().nativeElement;
+		(<EventTarget> el).dispatchEvent(createMouseEvent('mousedown', el, x, y));
 	}
 
 	function triggerMouseMove(x = 0, y = 0) {
 		const el: HTMLElement = getDndItemDebugElement().nativeElement;
-		const clientRect = el.getBoundingClientRect();
-
-		document.dispatchEvent(new MouseEvent('mousemove', <MouseEventInit>{
-			buttons: 1,
-			clientX: clientRect.left + x,
-			clientY: clientRect.top + y,
-			bubbles: true,
-			cancelable: true
-		}));
+		document.dispatchEvent(createMouseEvent('mousemove', el, x, y));
 	}
 
 	function triggerMouseUp() {
@@ -184,7 +183,7 @@ describe('DndItem', () => {
 		expect(getDndItem().dragging).toBe(false);
 	}));
 
-	it('should not be dragging after mouse down 1', async(() => {
+	it('should not be dragging after mousedown 1', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
@@ -236,6 +235,20 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(true);
+	}));
+
+	it('should capture mouse down events for button 1', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		const el = getDndItemDebugElement().nativeElement;
+		const event: MouseEvent = createMouseEvent('mousedown', el);
+		spyOn(event, 'stopPropagation');
+		spyOn(event, 'preventDefault');
+		(<EventTarget> el).dispatchEvent(event);
+
+		expect(event.stopPropagation).toHaveBeenCalled();
+		expect(event.preventDefault).toHaveBeenCalled();
 	}));
 
 	it('should not be dragging after mouse up', async(() => {
@@ -351,12 +364,29 @@ describe('DndItem', () => {
 		expect(getDndItemDebugElement().styles['pointerEvents']).toEqual(originalPointerEvents);
 	}));
 
-	xit('should update top style of the object based on mouse movement during dragging', async(() => {
+	it('should update left style based on mouse movement during dragging', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
+		const originalOffsetLeft = getDndItemDebugElement().nativeElement.offsetLeft;
+		const traveledX = 20;
 
-		const top = getDndItemDebugElement().nativeElement.offsetTop + 20;
+		triggerMouseDown();
+		triggerMouseMove(traveledX);
+		fixture.detectChanges();
 
-		expect(getDndItemDebugElement().styles['top']).toEqual(top + 'px');
+		expect(getDndItemDebugElement().styles['left']).toEqual((originalOffsetLeft + traveledX) + 'px');
+	}));
+
+	it('should update top style based on mouse movement during dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+		const originalOffsetTop = getDndItemDebugElement().nativeElement.offsetTop;
+		const traveledY = 20;
+
+		triggerMouseDown();
+		triggerMouseMove(0, traveledY);
+		fixture.detectChanges();
+
+		expect(getDndItemDebugElement().styles['top']).toEqual((originalOffsetTop + traveledY) + 'px');
 	}));
 });
