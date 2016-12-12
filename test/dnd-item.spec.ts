@@ -1,5 +1,6 @@
 import {
 	Component,
+	DebugElement,
 	ViewChild
 } from '@angular/core';
 
@@ -8,6 +9,10 @@ import {
 	ComponentFixture,
 	TestBed
 } from '@angular/core/testing';
+
+import {
+	By
+} from '@angular/platform-browser';
 
 import { DndItem } from '../src/dnd-item';
 import { DndModule } from '../src/dnd.module';
@@ -47,6 +52,10 @@ describe('DndItem', () => {
 
 	function getTestComponent(): TestComponent {
 		return fixture.componentInstance;
+	}
+
+	function getTestDebugElement(): DebugElement {
+		return fixture.debugElement;
 	}
 
 	function getDndItem(): DndItem {
@@ -201,6 +210,34 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(false);
+	}));
+
+	it('should have absolute position styling when dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		getDndItem().onMouseDown(createMouseEvent('mousedown'));
+		getDndItem().onMouseMove(createMouseEvent('mousemove', 20));
+		fixture.detectChanges();
+
+		const div = getTestDebugElement().query(By.css('div'));
+		expect(div.styles['position']).toBe('absolute');
+	}));
+
+	it('should have original position styling after mouse up', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+		let div = getTestDebugElement().query(By.css('div'));
+		const originalPositionStyle = div.styles['position'];
+
+		getDndItem().onMouseDown(createMouseEvent('mousedown'));
+		getDndItem().onMouseMove(createMouseEvent('mousemove', 20));
+		fixture.detectChanges();
+		getDndItem().onMouseUp(createMouseEvent('mouseup'));
+		fixture.detectChanges();
+
+		div = getTestDebugElement().query(By.css('div'));
+		expect(div.styles['position']).toEqual(originalPositionStyle);
 	}));
 });
 

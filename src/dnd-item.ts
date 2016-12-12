@@ -1,6 +1,7 @@
 import {
 	Directive,
 	ElementRef,
+	HostBinding,
 	Input,
 	Renderer,
 	OnDestroy
@@ -21,7 +22,25 @@ export class DndItem implements OnDestroy {
 	@Input() dndDraggable: boolean = true;
 	@Input() dndDragThreshold: number = 3;
 
-	dragging = false;
+	@HostBinding('style.top')
+	private styleTop: string;
+
+	@HostBinding('style.left')
+	private styleLeft: string;
+
+	@HostBinding('style.width')
+	private styleWidth: string;
+
+	@HostBinding('style.height')
+	private styleHeight: string;
+
+	@HostBinding('style.position')
+	private stylePosition: string;
+
+	@HostBinding('style.pointerEvents')
+	private stylePointerEvents: string;
+
+	private dragStarted = false;
 
 	private clickPosition: Point;
 
@@ -42,8 +61,12 @@ export class DndItem implements OnDestroy {
 		this.unbindMouseDown();
 	}
 
+	get dragging(): boolean {
+		return this.dragStarted;
+	}
+
 	onMouseDown(event: MouseEvent) {
-		this.dragging = false;
+		this.dragStarted = false;
 		this.clickPosition = this.getRelativeMousePosition(event);
 		this.attachDragListeners();
 		event.preventDefault();
@@ -52,7 +75,7 @@ export class DndItem implements OnDestroy {
 
 	onMouseMove(event: MouseEvent) {
 		if (!this.dragging && this.canStartDragging(event) && event.buttons === 1) {
-			this.dragging = true;
+			this.startDrag();
 		}
 		event.preventDefault();
 		event.stopPropagation();
@@ -60,9 +83,27 @@ export class DndItem implements OnDestroy {
 
 	onMouseUp(event: MouseEvent) {
 		if (this.dragging) {
-			this.dragging = false;
+			this.dragStarted = false;
+			this.removeDragStyles();
 		}
 		this.detachDragListeners();
+	}
+
+	private startDrag(): void {
+		this.applyDragStyles();
+		this.dragStarted = true;
+	}
+
+	private applyDragStyles(): void {
+		this.stylePosition = 'absolute';
+	}
+
+	private stopDrag(): void {
+		this.removeDragStyles();
+	}
+
+	private removeDragStyles(): void {
+		this.stylePosition = null;
 	}
 
 	private attachDragListeners(): void {
