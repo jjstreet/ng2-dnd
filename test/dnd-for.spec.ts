@@ -3,11 +3,15 @@ import {
 	Directive,
 	DebugElement,
 	Input } from '@angular/core';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { async, TestBed, ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { DndContainer } from '../src/dnd-container';
 import { DndModule } from '../src/dnd.module';
+
+class TestObject {
+	toString() { return 'TestObject'; }
+}
 
 function getTextContentFromNative(elements: NodeListOf<HTMLElement>): string {
 	let content = '';
@@ -76,37 +80,37 @@ describe('DndFor', () => {
 		fixture = null;
 	});
 
-	it('should reflect initial elements', () => {
+	it('should reflect initial elements', async(() => {
 		fixture = createTestComponent();
 		detectChangesAndExpectNativeText('1;2;');
-	});
+	}));
 
-	it('should reflect added elements', () => {
+	it('should reflect added elements', async(() => {
 		fixture = createTestComponent();
 		fixture.detectChanges();
 		getComponent().items.push(3);
 
 		detectChangesAndExpectNativeText('1;2;3;');
-	});
+	}));
 
-	it('should reflect removed elements', () => {
+	it('should reflect removed elements', async(() => {
 		fixture = createTestComponent();
 		fixture.detectChanges();
 		getComponent().items.splice(1, 1);
 
 		detectChangesAndExpectNativeText('1;');
-	});
+	}));
 
-	it('should reflect moved elements', () => {
+	it('should reflect moved elements', async(() => {
 		fixture = createTestComponent();
 		fixture.detectChanges();
 		getComponent().items.splice(0, 1);
 		getComponent().items.push(1);
 
 		detectChangesAndExpectNativeText('2;1;');
-	});
+	}));
 
-	it('should reflect a mix of all changes (additions/removals/moves)', () => {
+	it('should reflect a mix of all changes (additions/removals/moves)', async(() => {
 		fixture = createTestComponent();
 		getComponent().items = [0, 1, 2, 3, 4, 5];
 		fixture.detectChanges();
@@ -114,9 +118,9 @@ describe('DndFor', () => {
 		getComponent().items = [6, 2, 7, 0, 4, 8];
 
 		detectChangesAndExpectNativeText('6;2;7;0;4;8;');
-	});
+	}));
 
-	it('should iterate over an array of objects', () => {
+	it('should iterate over an array of objects', async(() => {
 		const template = '<div dndContainer [dndItems]="items"><span *dndFor="let item">{{item["name"]}};</span></div>';
 		const name1 = {name: 'fallon'};
 		const name2 = {name: 'buford'};
@@ -141,17 +145,17 @@ describe('DndFor', () => {
 		getComponent().items.splice(2, 1);
 		getComponent().items.splice(0, 1);
 		detectChangesAndExpectNativeText(`${name3.name};`);
-	});
+	}));
 
-	it('should gracefully handle nulls', () => {
+	it('should gracefully handle nulls', async(() => {
 		const template = '<div dndContainer [dndItems]="null"><span *dndFor="let item">{{item}};</span></div>';
 
 		fixture = createTestComponent(template);
 
 		detectChangesAndExpectNativeText('');
-	});
+	}));
 
-	it('should gracefully handle ref changing to null and back', () => {
+	it('should gracefully handle ref changing to null and back', async(() => {
 		fixture = createTestComponent();
 
 		detectChangesAndExpectNativeText('1;2;');
@@ -161,9 +165,9 @@ describe('DndFor', () => {
 
 		getComponent().items = [1, 2, 3];
 		detectChangesAndExpectNativeText('1;2;3;');
-	});
+	}));
 
-	it('should throw on non-iterable ref and suggest using an array', () => {
+	it('should throw on non-iterable ref and suggest using an array', async(() => {
 		fixture = createTestComponent();
 
 		getComponent().items = <any>'a_string';
@@ -171,5 +175,24 @@ describe('DndFor', () => {
 		expect(() => fixture.detectChanges())
 				.toThrowError(
 						/Cannot find a differ supporting object 'a_string' of type 'string'. DndFor only supports binding to Iterables such as Arrays/);
-	});
+	}));
+
+	it('should throw on ref changing to string', async(() => {
+		fixture = createTestComponent();
+
+		detectChangesAndExpectNativeText('1;2;');
+
+		getComponent().items = <any> 'this breaks';
+
+		expect(() => fixture.detectChanges()).toThrowError();
+	}));
+
+	it('should work with duplicates', async(() => {
+		fixture = createTestComponent();
+
+		const a = new TestObject();
+		getComponent().items = [a, a];
+
+		detectChangesAndExpectNativeText('TestObject;TestObject;');
+	}));
 });
