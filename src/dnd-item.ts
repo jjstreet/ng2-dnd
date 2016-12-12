@@ -65,6 +65,14 @@ export class DndItem implements OnDestroy {
 		return this.dragStarted;
 	}
 
+	get elementWidth(): number {
+		return this.el.offsetWidth;
+	}
+
+	get elementHeight(): number {
+		return this.el.offsetHeight;
+	}
+
 	onMouseDown(event: MouseEvent) {
 		this.dragStarted = false;
 		this.clickPosition = this.getRelativeMousePosition(event);
@@ -96,6 +104,7 @@ export class DndItem implements OnDestroy {
 
 	private applyDragStyles(): void {
 		this.stylePosition = 'absolute';
+		this.styleWidth = this.elementWidth + 'px';
 	}
 
 	private stopDrag(): void {
@@ -104,6 +113,7 @@ export class DndItem implements OnDestroy {
 
 	private removeDragStyles(): void {
 		this.stylePosition = null;
+		this.styleWidth = null;
 	}
 
 	private attachDragListeners(): void {

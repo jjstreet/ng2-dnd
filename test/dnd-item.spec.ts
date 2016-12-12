@@ -227,7 +227,7 @@ describe('DndItem', () => {
 	it('should have original position styling after mouse up', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
-		let div = getTestDebugElement().query(By.css('div'));
+		const div = getTestDebugElement().query(By.css('div'));
 		const originalPositionStyle = div.styles['position'];
 
 		getDndItem().onMouseDown(createMouseEvent('mousedown'));
@@ -236,8 +236,36 @@ describe('DndItem', () => {
 		getDndItem().onMouseUp(createMouseEvent('mouseup'));
 		fixture.detectChanges();
 
-		div = getTestDebugElement().query(By.css('div'));
 		expect(div.styles['position']).toEqual(originalPositionStyle);
+	}));
+
+	it('should set width styling to offsetWidth when dragging', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		const div = getTestDebugElement().query(By.css('div'));
+		const originalWidth = div.nativeElement.offsetWidth;
+
+		getDndItem().onMouseDown(createMouseEvent('mousedown'));
+		getDndItem().onMouseMove(createMouseEvent('mousemove', 20));
+		fixture.detectChanges();
+
+		expect(div.styles['width']).toEqual(`${originalWidth}px`);
+	}));
+
+	it('should remove width styling after mouse up', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+		const div = getTestDebugElement().query(By.css('div'));
+		const originalWidthStyle = div.styles['position'];
+
+		getDndItem().onMouseDown(createMouseEvent('mousedown'));
+		getDndItem().onMouseMove(createMouseEvent('mousemove', 20));
+		fixture.detectChanges();
+		getDndItem().onMouseUp(createMouseEvent('mouseup'));
+		fixture.detectChanges();
+
+		expect(div.styles['width']).toEqual(originalWidthStyle);
 	}));
 });
 
