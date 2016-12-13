@@ -10,4 +10,6 @@ export class DndContainer {
 
 	@Input() dndContainer: any;
 	@Input() dndItems: any;
+	@Input() dndTargets: string[] = [];
+	@Input() dndHorizontal: boolean = false;
 }

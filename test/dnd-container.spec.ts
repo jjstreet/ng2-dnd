@@ -19,6 +19,8 @@ import { DndModule } from '../src/dnd.module';
 export class TestComponent {
 	container: any;
 	items: any;
+	targets: string[];
+	horizontal: boolean;
 
 	@ViewChild(DndContainer)
 	dndContainer: DndContainer;
@@ -27,7 +29,9 @@ export class TestComponent {
 const INPUTS_TEMPLATE = `
 	<div
 			[dndContainer]="container"
-			[dndItems]="items"></div>`;
+			[dndItems]="items"
+			[dndTargets]="targets"
+			[dndHorizontal]="horizontal"></div>`;
 
 function createDefaultTestComponent(): ComponentFixture<TestComponent> {
 	return TestBed.createComponent(TestComponent);
@@ -64,27 +68,59 @@ describe('DndContainer', () => {
 		fixture = null;
 	});
 
-	it('should be instantiated', () => {
+	it('should be instantiated', async(() => {
 		fixture = createDefaultTestComponent();
 
 		expect(getTestComponent()).toBeDefined();
-	});
+	}));
 
-	it('should have an assignable container object', () => {
+	it('should have an assignable container object', async(() => {
 		const container = {};
 		fixture = createDefaultTestComponent();
 		getTestComponent().container = container;
 		fixture.detectChanges();
 
 		expect(getDndContainer().dndContainer).toBe(container);
-	});
+	}));
 
-	it('should have an assignable items for holding content in the container', () => {
+	it('should have an assignable items for holding content in the container', async(() => {
 		const items = ['object 1', 'object 2'];
 		fixture = createTestComponentWithInputs();
 		getTestComponent().items = items;
 		fixture.detectChanges();
 
 		expect(getDndContainer().dndItems).toEqual(items);
-	});
+	}));
+
+	it('should have default targets of []', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		expect(getDndContainer().dndTargets).toEqual([]);
+	}));
+
+	it('should have settable dnd targets', async(() => {
+		const targets = ['tom', 'jerry'];
+		fixture = createTestComponentWithInputs();
+		getTestComponent().targets = targets;
+		fixture.detectChanges();
+
+		expect(getDndContainer().dndTargets).toEqual(targets);
+	}));
+
+	it('should have default horizontal of false', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		expect(getDndContainer().dndHorizontal).toBe(false);
+	}));
+
+	it('should have settable horizontal', async(() => {
+		const targets = ['tom', 'jerry'];
+		fixture = createTestComponentWithInputs();
+		getTestComponent().horizontal = true;
+		fixture.detectChanges();
+
+		expect(getDndContainer().dndHorizontal).toBe(true);
+	}));
 });
