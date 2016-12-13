@@ -1,9 +1,13 @@
-import { NgModule } from '@angular/core';
-import { Provider } from '@angular/core';
+import {
+	NgModule,
+	Provider,
+	ModuleWithProviders
+} from '@angular/core';
 
 import { DndContainer } from './dnd-container';
 import { DndFor } from './dnd-for';
 import { DndItem } from './dnd-item';
+import { DndService } from './dnd.service';
 
 export {
 	DndContainer,
@@ -22,4 +26,13 @@ export const DND_DIRECTIVES: Provider[] = [
 	exports: [DND_DIRECTIVES],
 	providers: []
 })
-export class DndModule {}
+export class DndModule {
+	static forRoot(): ModuleWithProviders {
+		return {
+			ngModule: DndModule,
+			providers: [
+				DndService
+			]
+		};
+	}
+}

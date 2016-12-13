@@ -73,11 +73,13 @@ export class DndItem implements OnDestroy {
 	}
 
 	onMouseDown(event: MouseEvent) {
-		this.dragStarted = false;
-		this.clickPosition = this.getRelativeMousePosition(event);
-		this.attachDragListeners();
-		event.preventDefault();
-		event.stopPropagation();
+		if (this.dndDraggable && event.buttons === 1) {
+			this.dragStarted = false;
+			this.clickPosition = this.getRelativeMousePosition(event);
+			this.attachDragListeners();
+			event.preventDefault();
+			event.stopPropagation();
+		}
 	}
 
 	onMouseMove(event: MouseEvent) {

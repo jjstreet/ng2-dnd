@@ -108,14 +108,14 @@ describe('DndContainer', () => {
 		expect(getDndContainer().dndTargets).toEqual(targets);
 	}));
 
-	it('should have default horizontal of false', async(() => {
+	it('should have default horizontal mode of false', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
 		expect(getDndContainer().dndHorizontal).toBe(false);
 	}));
 
-	it('should have settable horizontal', async(() => {
+	it('should have settable horizontal mode', async(() => {
 		const targets = ['tom', 'jerry'];
 		fixture = createTestComponentWithInputs();
 		getTestComponent().horizontal = true;
