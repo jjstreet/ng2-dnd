@@ -1,6 +1,8 @@
 import {
 	Component,
 	DebugElement,
+	Directive,
+	Input,
 	ViewChild
 } from '@angular/core';
 
@@ -14,12 +16,13 @@ import {
 	By
 } from '@angular/platform-browser';
 
+import { DndContainer } from '../src/dnd-container';
 import { DndItem } from '../src/dnd-item';
 import { DndModule } from '../src/dnd.module';
 
 @Component({
 	selector: 'test-cmp',
-	template: '<div [dndItem]="item">Drag Me</div>'
+	template: '<div [dndContainer]="container"><div [dndItem]="item">Drag Me</div></div>'
 })
 export class TestComponent {
 	item: any;
@@ -31,12 +34,22 @@ export class TestComponent {
 	dndItem: DndItem;
 }
 
+@Directive({
+	selector: '[dndContainer]'
+})
+export class DndContainerStub {
+
+	@Input() dndContainer: any;
+}
+
 const INPUTS_TEMPLATE = `
-	<div
-			[dndItem]="item"
-			[dndTargets]="targets"
-			[dndDraggable]="draggable"
-			[dndDragThreshold]="dragThreshold">Drag Me</div>`;
+	<div [dndContainer]="container">
+		<div
+				[dndItem]="item"
+				[dndTargets]="targets"
+				[dndDraggable]="draggable"
+				[dndDragThreshold]="dragThreshold">Drag Me</div>
+	</div>`;
 
 function createDefaultTestComponent(): ComponentFixture<TestComponent> {
 	return TestBed.createComponent(TestComponent);
@@ -102,7 +115,8 @@ describe('DndItem', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			declarations: [
-				TestComponent
+				TestComponent,
+				DndContainerStub
 			],
 			imports: [
 				DndModule.forRoot()
@@ -332,7 +346,7 @@ describe('DndItem', () => {
 
 		triggerMouseDown();
 		const el = getDndItemDebugElement().nativeElement;
-		const event: MouseEvent = createMouseEvent('mousemove', el, 20, 20);
+		const event: MouseEvent = createMouseEvent('mousemove', el, 1, 20, 20);
 		spyOn(event, 'stopPropagation');
 		spyOn(event, 'preventDefault');
 		(<EventTarget> el).dispatchEvent(event);
