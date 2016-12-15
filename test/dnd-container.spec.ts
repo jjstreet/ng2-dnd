@@ -1,37 +1,45 @@
 import {
 	Component,
+	Input,
 	ViewChild
 } from '@angular/core';
 
 import {
 	async,
 	ComponentFixture,
+	inject,
 	TestBed
 } from '@angular/core/testing';
 
 import { DndContainer } from '../src/dnd-container';
+import { DndItem } from '../src/dnd-item';
 import { DndModule } from '../src/dnd.module';
+import { DndService } from '../src/dnd.service';
 
 @Component({
 	selector: 'test-cmp',
-	template: '<div [dndContainer]="container"></div>'
+	template: '<div [dndContainer]="container"><div [dndItem]="item">Drag Me</div></div>'
 })
-export class TestComponent {
+class TestComponent {
 	container: any = undefined;;
 	items: any = undefined;
-	targets: string[] = [];
+	containerTargets: string[] = [];
+	itemTargets: string[] = [];
 	horizontal: boolean = false;
 
 	@ViewChild(DndContainer)
 	dndContainer: DndContainer;
+
+	@ViewChild(DndItem)
+	dndItem: DndItem;
 }
 
 const INPUTS_TEMPLATE = `
 	<div
 			[dndContainer]="container"
 			[dndItems]="items"
-			[dndTargets]="targets"
-			[dndHorizontal]="horizontal"></div>`;
+			[dndTargets]="containerTargets"
+			[dndHorizontal]="horizontal"><div [dndItem]="item" [dndTargets]="itemTargets">Drag Me</div></div>`;
 
 function createDefaultTestComponent(): ComponentFixture<TestComponent> {
 	return TestBed.createComponent(TestComponent);
@@ -53,13 +61,21 @@ describe('DndContainer', () => {
 		return getTestComponent().dndContainer;
 	}
 
+	function getDndItem(): DndItem {
+		return getTestComponent().dndItem;
+	}
+
+	function getInjectedDndService(): DndService {
+		return fixture.debugElement.injector.get(DndService);
+	}
+
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			declarations: [
 				TestComponent
 			],
 			imports: [
-				DndModule
+				DndModule.forRoot()
 			]
 		});
 	});
@@ -102,7 +118,7 @@ describe('DndContainer', () => {
 	it('should have settable dnd targets', async(() => {
 		const targets = ['tom', 'jerry'];
 		fixture = createTestComponentWithInputs();
-		getTestComponent().targets = targets;
+		getTestComponent().containerTargets = targets;
 		fixture.detectChanges();
 
 		expect(getDndContainer().dndTargets).toEqual(targets);
@@ -130,5 +146,33 @@ describe('DndContainer', () => {
 		fixture.detectChanges();
 
 		expect(getDndContainer().itemIndexOf(2)).toEqual(1);
+	}));
+
+	it('should allow items with at least one matching target to be dropped', async(() =>{
+		fixture = createTestComponentWithInputs();
+
+		getTestComponent().containerTargets = [];
+		getTestComponent().itemTargets = [];
+		fixture.detectChanges();
+
+		expect(getDndContainer().isDropAllowed(getDndItem())).toBe(true, 'item [] container []');
+		
+		getTestComponent().containerTargets = ['1', '2'];
+		getTestComponent().itemTargets = ['1'];
+		fixture.detectChanges();
+
+		expect(getDndContainer().isDropAllowed(getDndItem())).toBe(true, 'item [1] container [1, 2]');
+
+		getTestComponent().containerTargets = ['1', '2'];
+		getTestComponent().itemTargets = ['A'];
+		fixture.detectChanges();
+
+		expect(getDndContainer().isDropAllowed(getDndItem())).toBe(false, 'item [A] container [1, 2]');
+
+		getTestComponent().containerTargets = ['B'];
+		getTestComponent().itemTargets = ['1', 'B'];
+		fixture.detectChanges();
+
+		expect(getDndContainer().isDropAllowed(getDndItem())).toBe(true, 'item [1, B] container [B]');
 	}));
 });

@@ -494,8 +494,6 @@ describe('DndItem', () => {
 		triggerMouseMove(20);
 		fixture.detectChanges();
 
-		console.log(getInjectedDndService().sourceIndex);
-
 		expect(getInjectedDndService().sourceIndex).toEqual(2);
 	}));
 });

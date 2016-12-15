@@ -3,6 +3,8 @@ import {
 	Input
 } from '@angular/core';
 
+import { DndItem } from './dnd-item';
+
 @Directive({
 	selector: '[dndContainer]'
 })
@@ -18,5 +20,17 @@ export class DndContainer {
 			return -1;
 		}
 		return this.dndItems.indexOf(item);
+	}
+
+	isDropAllowed(dndItem: DndItem): boolean {
+		if (this.dndTargets.length === 0 && dndItem.dndTargets.length === 0) {
+			return true;
+		}
+		for (let target of dndItem.dndTargets) {
+			if (this.dndTargets.indexOf(target) > -1) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
