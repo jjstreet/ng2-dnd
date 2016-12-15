@@ -7,9 +7,10 @@ import {
 	OnDestroy
 } from '@angular/core';
 
-import {
-	Point
-} from './shared';
+import { DndContainer } from './dnd-container';
+import { DndService } from './dnd.service';
+
+import { Point } from './shared';
 
 @Directive({
 	selector: '[dndItem]'
@@ -51,7 +52,9 @@ export class DndItem implements OnDestroy {
 
 	constructor(
 			private elementRef: ElementRef,
-			private renderer: Renderer) {
+			private renderer: Renderer,
+			private dnd: DndService,
+			private dndContainer: DndContainer) {
 		this.el = this.elementRef.nativeElement;
 		this.unbindMouseDown = this.renderer.listen(this.el, 'mousedown', this.onMouseDown.bind(this));
 	}
@@ -102,6 +105,8 @@ export class DndItem implements OnDestroy {
 
 	private startDrag(): void {
 		this.applyDragStyles();
+		this.dnd.source = this.dndContainer;
+		this.dnd.item = this;
 		this.dragStarted = true;
 	}
 

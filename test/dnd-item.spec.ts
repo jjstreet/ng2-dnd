@@ -9,6 +9,7 @@ import {
 import {
 	async,
 	ComponentFixture,
+	inject,
 	TestBed
 } from '@angular/core/testing';
 
@@ -19,12 +20,14 @@ import {
 import { DndContainer } from '../src/dnd-container';
 import { DndItem } from '../src/dnd-item';
 import { DndModule } from '../src/dnd.module';
+import { DndService } from '../src/dnd.service';
 
 @Component({
 	selector: 'test-cmp',
 	template: '<div [dndContainer]="container"><div [dndItem]="item">Drag Me</div></div>'
 })
 export class TestComponent {
+	container: any;
 	item: any;
 	targets: string[] = [];
 	draggable: boolean = true;
@@ -32,6 +35,9 @@ export class TestComponent {
 
 	@ViewChild(DndItem)
 	dndItem: DndItem;
+
+	@ViewChild(DndContainer)
+	dndContainer: DndContainer;
 }
 
 @Directive({
@@ -75,6 +81,10 @@ describe('DndItem', () => {
 		return getTestComponent().dndItem;
 	}
 
+	function getDndContainer(): DndContainer {
+		return getTestComponent().dndContainer;
+	}
+
 	function getDndItemDebugElement(): DebugElement {
 		return getTestDebugElement().query(By.directive(DndItem));
 	}
@@ -110,6 +120,10 @@ describe('DndItem', () => {
 			bubbles: true,
 			cancelable: true
 		}));
+	}
+
+	function getInjectedDndService(): DndService {
+		return fixture.debugElement.injector.get(DndService);
 	}
 
 	beforeEach(() => {
@@ -453,5 +467,27 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getDndItem().dragging).toBe(false);
+	}));
+
+	it('should set DndService source container property to its DndContainer when starting drag', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		triggerMouseDown();
+		triggerMouseMove(20);
+		fixture.detectChanges();
+
+		expect(getInjectedDndService().source).toBe(getDndContainer());
+	}));
+
+	it('should update DndService item property when starting drag to itself', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		triggerMouseDown();
+		triggerMouseMove(20);
+		fixture.detectChanges();
+
+		expect(getInjectedDndService().item).toBe(getDndItem());
 	}));
 });
