@@ -16,7 +16,7 @@ import { Point } from './shared';
 @Directive({
 	selector: '[dndItem]'
 })
-export class DndItem implements OnDestroy {
+export class DndItem implements OnInit, OnDestroy {
 
 	@Input() dndItem: any;
 	@Input() dndTargets: string[] = [];
@@ -45,6 +45,10 @@ export class DndItem implements OnDestroy {
 
 	private clickPosition: Point;
 
+	private mouseDownListener = this.onMouseDown.bind(this);
+	private mouseMoveListener = this.onMouseMove.bind(this);
+	private mouseUpListener = this.onMouseUp.bind(this);
+
 	private unbindMouseDown: Function;
 	private unbindMouseMove: Function;
 	private unbindMouseUp: Function;
@@ -57,7 +61,10 @@ export class DndItem implements OnDestroy {
 			private dnd: DndService,
 			private dndContainer: DndContainer) {
 		this.el = this.elementRef.nativeElement;
-		this.unbindMouseDown = this.renderer.listen(this.el, 'mousedown', this.onMouseDown.bind(this));
+	}
+	
+	ngOnInit() {
+		this.unbindMouseDown = this.renderer.listen(this.el, 'mousedown', this.mouseDownListener);
 	}
 
 	ngOnDestroy() {
@@ -139,8 +146,8 @@ export class DndItem implements OnDestroy {
 	}
 
 	private attachDragListeners(): void {
-		this.unbindMouseMove = this.renderer.listenGlobal('document', 'mousemove', this.onMouseMove.bind(this));
-		this.unbindMouseUp = this.renderer.listenGlobal('document', 'mouseup', this.onMouseUp.bind(this));
+		this.unbindMouseMove = this.renderer.listenGlobal('document', 'mousemove', this.mouseMoveListener);
+		this.unbindMouseUp = this.renderer.listenGlobal('document', 'mouseup', this.mouseUpListener);
 	}
 
 	private detachDragListeners(): void {
