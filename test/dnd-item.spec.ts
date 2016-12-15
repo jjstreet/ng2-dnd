@@ -523,12 +523,11 @@ describe('DndItem', () => {
 	}));
 
 	it('should dispatch started action on drag start', async(() => {
-		let observedAction: DndAction;
 		fixture = createDefaultTestComponent();
+		let observedAction: DndAction;
 		getInjectedDndService().$actions.subscribe((action) => {
 			observedAction = action;
 		});
-
 		getTestComponent().items = [1, 2, 3];
 		getTestComponent().item = 3;
 

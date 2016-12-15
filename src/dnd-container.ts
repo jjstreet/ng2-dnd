@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 
 import { DndItem } from './dnd-item';
+import { DndService } from './dnd.service';
 
 @Directive({
 	selector: '[dndContainer]'
@@ -14,6 +15,9 @@ export class DndContainer {
 	@Input() dndItems: any[];
 	@Input() dndTargets: string[] = [];
 	@Input() dndHorizontal: boolean = false;
+
+	constructor(
+			private dnd: DndService) { }
 
 	itemIndexOf(item: any): number {
 		if (!this.dndItems) {

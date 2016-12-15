@@ -65,13 +65,11 @@ describe('DndFor', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			declarations: [
-				TestComponent
+				TestComponent,
+				DndContainerStub
 			],
 			imports: [
-				DndModule
-			],
-			providers: [
-				{provide: DndContainer, useClass: DndContainerStub}
+				DndModule.forRoot()
 			]
 		});
 	});
