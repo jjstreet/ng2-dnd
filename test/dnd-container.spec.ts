@@ -17,10 +17,10 @@ import { DndModule } from '../src/dnd.module';
 	template: '<div [dndContainer]="container"></div>'
 })
 export class TestComponent {
-	container: any;
-	items: any;
-	targets: string[];
-	horizontal: boolean;
+	container: any = undefined;;
+	items: any = undefined;
+	targets: string[] = [];
+	horizontal: boolean = false;
 
 	@ViewChild(DndContainer)
 	dndContainer: DndContainer;
@@ -122,5 +122,13 @@ describe('DndContainer', () => {
 		fixture.detectChanges();
 
 		expect(getDndContainer().dndHorizontal).toBe(true);
+	}));
+
+	it('should provide index of item within items', async(() => {
+		fixture = createTestComponentWithInputs();
+		getTestComponent().items = [1, 2, 3];
+		fixture.detectChanges();
+
+		expect(getDndContainer().itemIndexOf(2)).toEqual(1);
 	}));
 });

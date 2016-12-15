@@ -24,10 +24,11 @@ import { DndService } from '../src/dnd.service';
 
 @Component({
 	selector: 'test-cmp',
-	template: '<div [dndContainer]="container"><div [dndItem]="item">Drag Me</div></div>'
+	template: '<div [dndContainer]="container" [dndItems]="items"><div [dndItem]="item">Drag Me</div></div>'
 })
 export class TestComponent {
 	container: any;
+	items: any[];
 	item: any;
 	targets: string[] = [];
 	draggable: boolean = true;
@@ -40,16 +41,9 @@ export class TestComponent {
 	dndContainer: DndContainer;
 }
 
-@Directive({
-	selector: '[dndContainer]'
-})
-export class DndContainerStub {
-
-	@Input() dndContainer: any;
-}
-
 const INPUTS_TEMPLATE = `
-	<div [dndContainer]="container">
+	<div [dndContainer]="container"
+			[dndItems]="items">
 		<div
 				[dndItem]="item"
 				[dndTargets]="targets"
@@ -129,8 +123,7 @@ describe('DndItem', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			declarations: [
-				TestComponent,
-				DndContainerStub
+				TestComponent
 			],
 			imports: [
 				DndModule.forRoot()
@@ -489,5 +482,20 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getInjectedDndService().item).toBe(getDndItem());
+	}));
+
+	it('should update DndService sourceIndex when starting drag to index within container', async(() => {
+		fixture = createDefaultTestComponent();
+		getTestComponent().items = [1, 2, 3];
+		getTestComponent().item = 3;
+		fixture.detectChanges();
+
+		triggerMouseDown();
+		triggerMouseMove(20);
+		fixture.detectChanges();
+
+		console.log(getInjectedDndService().sourceIndex);
+
+		expect(getInjectedDndService().sourceIndex).toEqual(2);
 	}));
 });

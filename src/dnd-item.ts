@@ -106,6 +106,7 @@ export class DndItem implements OnDestroy {
 	private startDrag(): void {
 		this.applyDragStyles();
 		this.dnd.source = this.dndContainer;
+		this.dnd.sourceIndex = this.dndContainer.itemIndexOf(this.dndItem);
 		this.dnd.item = this;
 		this.dragStarted = true;
 	}
