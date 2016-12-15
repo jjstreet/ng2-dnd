@@ -17,6 +17,7 @@ import {
 	By
 } from '@angular/platform-browser';
 
+import { DndAction } from '../src/dnd-action.enum';
 import { DndContainer } from '../src/dnd-container';
 import { DndItem } from '../src/dnd-item';
 import { DndModule } from '../src/dnd.module';
@@ -519,5 +520,22 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getInjectedDndService().targetIndex).toEqual(2);
+	}));
+
+	it('should dispatch started action on drag start', async(() => {
+		let observedAction: DndAction;
+		fixture = createDefaultTestComponent();
+		getInjectedDndService().$actions.subscribe((action) => {
+			observedAction = action;
+		});
+
+		getTestComponent().items = [1, 2, 3];
+		getTestComponent().item = 3;
+
+		triggerMouseDown();
+		triggerMouseMove(20);
+		fixture.detectChanges();
+
+		expect(observedAction).toEqual(DndAction.Started);
 	}));
 });

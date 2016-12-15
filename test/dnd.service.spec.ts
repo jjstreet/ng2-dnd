@@ -15,9 +15,12 @@ describe('DndService', () => {
 	});
 
 	it('should announce when actions are dispatched', async(() => {
+		let observedAction: DndAction;
 		service.$actions.subscribe(action => {
-			expect(action).toEqual(DndAction.Started);
+			observedAction = action;
 		});
 		service.dispatchAction(DndAction.Started);
+
+		expect(observedAction).toEqual(DndAction.Started);
 	}));
 });

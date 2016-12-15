@@ -7,6 +7,7 @@ import {
 	OnDestroy
 } from '@angular/core';
 
+import { DndAction } from './dnd-action.enum';
 import { DndContainer } from './dnd-container';
 import { DndService } from './dnd.service';
 
@@ -105,12 +106,17 @@ export class DndItem implements OnDestroy {
 
 	private startDrag(): void {
 		this.applyDragStyles();
+		this.dispatchDragStart();
+		this.dragStarted = true;
+	}
+
+	private dispatchDragStart(): void {
 		this.dnd.source = this.dndContainer;
 		this.dnd.sourceIndex = this.dndContainer.itemIndexOf(this.dndItem);
 		this.dnd.item = this;
 		this.dnd.target = this.dndContainer;
 		this.dnd.targetIndex = this.dndContainer.itemIndexOf(this.dndItem);
-		this.dragStarted = true;
+		this.dnd.dispatchAction(DndAction.Started);
 	}
 
 	private applyDragStyles(): void {
