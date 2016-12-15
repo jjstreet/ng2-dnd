@@ -462,7 +462,7 @@ describe('DndItem', () => {
 		expect(getDndItem().dragging).toBe(false);
 	}));
 
-	it('should set DndService source container property to its DndContainer when starting drag', async(() => {
+	it('should update DndService source when starting drag to current container', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
@@ -473,7 +473,7 @@ describe('DndItem', () => {
 		expect(getInjectedDndService().source).toBe(getDndContainer());
 	}));
 
-	it('should update DndService item property when starting drag to itself', async(() => {
+	it('should update DndService item when starting drag to itself', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
@@ -495,5 +495,29 @@ describe('DndItem', () => {
 		fixture.detectChanges();
 
 		expect(getInjectedDndService().sourceIndex).toEqual(2);
+	}));
+
+	it('should update DndService target when starting drag to current container', async(() => {
+		fixture = createDefaultTestComponent();
+		fixture.detectChanges();
+
+		triggerMouseDown();
+		triggerMouseMove(20);
+		fixture.detectChanges();
+
+		expect(getInjectedDndService().target).toBe(getDndContainer());
+	}));
+
+	it('should update DndService targetIndex when starting drag to index within container', async(() => {
+		fixture = createDefaultTestComponent();
+		getTestComponent().items = [1, 2, 3];
+		getTestComponent().item = 3;
+		fixture.detectChanges();
+
+		triggerMouseDown();
+		triggerMouseMove(20);
+		fixture.detectChanges();
+
+		expect(getInjectedDndService().targetIndex).toEqual(2);
 	}));
 });

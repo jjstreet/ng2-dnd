@@ -108,6 +108,8 @@ export class DndItem implements OnDestroy {
 		this.dnd.source = this.dndContainer;
 		this.dnd.sourceIndex = this.dndContainer.itemIndexOf(this.dndItem);
 		this.dnd.item = this;
+		this.dnd.target = this.dndContainer;
+		this.dnd.targetIndex = this.dndContainer.itemIndexOf(this.dndItem);
 		this.dragStarted = true;
 	}
 
