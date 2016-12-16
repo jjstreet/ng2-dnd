@@ -96,7 +96,7 @@ describe('DndContainer', () => {
 		getTestComponent().container = container;
 		fixture.detectChanges();
 
-		expect(getDndContainer().dndContainer).toBe(container);
+		expect(getDndContainer().container).toBe(container);
 	}));
 
 	it('should have an assignable items for holding content in the container', async(() => {
@@ -105,14 +105,14 @@ describe('DndContainer', () => {
 		getTestComponent().items = items;
 		fixture.detectChanges();
 
-		expect(getDndContainer().dndItems).toEqual(items);
+		expect(getDndContainer().items).toEqual(items);
 	}));
 
 	it('should have default targets of []', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		expect(getDndContainer().dndTargets).toEqual([]);
+		expect(getDndContainer().targets).toEqual([]);
 	}));
 
 	it('should have settable dnd targets', async(() => {
@@ -121,14 +121,14 @@ describe('DndContainer', () => {
 		getTestComponent().containerTargets = targets;
 		fixture.detectChanges();
 
-		expect(getDndContainer().dndTargets).toEqual(targets);
+		expect(getDndContainer().targets).toEqual(targets);
 	}));
 
 	it('should have default horizontal mode of false', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		expect(getDndContainer().dndHorizontal).toBe(false);
+		expect(getDndContainer().horizontal).toBe(false);
 	}));
 
 	it('should have settable horizontal mode', async(() => {
@@ -137,7 +137,7 @@ describe('DndContainer', () => {
 		getTestComponent().horizontal = true;
 		fixture.detectChanges();
 
-		expect(getDndContainer().dndHorizontal).toBe(true);
+		expect(getDndContainer().horizontal).toBe(true);
 	}));
 
 	it('should provide index of item within items', async(() => {

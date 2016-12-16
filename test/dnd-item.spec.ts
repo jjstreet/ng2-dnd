@@ -149,14 +149,14 @@ describe('DndItem', () => {
 		getTestComponent().item = item;
 		fixture.detectChanges();
 
-		expect(getDndItem().dndItem).toBe(item);
+		expect(getDndItem().item).toBe(item);
 	}));
 
 	it('should have default targets of []', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		expect(getDndItem().dndTargets).toEqual([]);
+		expect(getDndItem().targets).toEqual([]);
 	}));
 
 	it('should have settable dnd targets', async(() => {
@@ -165,14 +165,14 @@ describe('DndItem', () => {
 		getTestComponent().targets = targets;
 		fixture.detectChanges();
 
-		expect(getDndItem().dndTargets).toEqual(targets);
+		expect(getDndItem().targets).toEqual(targets);
 	}));
 
 	it('should be draggable by default', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		expect(getDndItem().dndDraggable).toBeTruthy();
+		expect(getDndItem().draggable).toBeTruthy();
 	}));
 
 	it('should have settable draggability', async(() => {
@@ -180,14 +180,14 @@ describe('DndItem', () => {
 		getTestComponent().draggable = false;
 		fixture.detectChanges();
 
-		expect(getDndItem().dndDraggable).toBeFalsy();
+		expect(getDndItem().draggable).toBeFalsy();
 	}));
 
 	it('should have default drag threshold of 3px', async(() => {
 		fixture = createDefaultTestComponent();
 		fixture.detectChanges();
 
-		expect(getDndItem().dndDragThreshold).toBe(3);
+		expect(getDndItem().dragThreshold).toBe(3);
 	}));
 
 	it('should have assignable drag threshold', async(() => {
@@ -195,7 +195,7 @@ describe('DndItem', () => {
 		getTestComponent().dragThreshold = 50;
 		fixture.detectChanges();
 
-		expect(getDndItem().dndDragThreshold).toEqual(50);
+		expect(getDndItem().dragThreshold).toEqual(50);
 	}));
 
 	it('should not be dragging on instantiation', async(() => {

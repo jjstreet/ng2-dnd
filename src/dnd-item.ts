@@ -18,10 +18,10 @@ import { Point } from './shared';
 })
 export class DndItem implements OnDestroy {
 
-	@Input() dndItem: any;
-	@Input() dndTargets: string[] = [];
-	@Input() dndDraggable: boolean = true;
-	@Input() dndDragThreshold: number = 3;
+	@Input('dndItem') item: any;
+	@Input('dndTargets') targets: string[] = [];
+	@Input('dndDraggable') draggable: boolean = true;
+	@Input('dndDragThreshold') dragThreshold: number = 3;
 
 	@HostBinding('style.top')
 	private styleTop: string;
@@ -77,7 +77,7 @@ export class DndItem implements OnDestroy {
 	}
 
 	onMouseDown(event: MouseEvent) {
-		if (this.dndDraggable && event.buttons === 1) {
+		if (this.draggable && event.buttons === 1) {
 			this.dragStarted = false;
 			this.clickPosition = this.getRelativeMousePosition(event);
 			this.attachDragListeners();
@@ -112,10 +112,10 @@ export class DndItem implements OnDestroy {
 
 	private dispatchDragStart(): void {
 		this.dnd.source = this.dndContainer;
-		this.dnd.sourceIndex = this.dndContainer.itemIndexOf(this.dndItem);
+		this.dnd.sourceIndex = this.dndContainer.itemIndexOf(this.item);
 		this.dnd.item = this;
 		this.dnd.target = this.dndContainer;
-		this.dnd.targetIndex = this.dndContainer.itemIndexOf(this.dndItem);
+		this.dnd.targetIndex = this.dndContainer.itemIndexOf(this.item);
 		this.dnd.dispatchAction(DndAction.Started);
 	}
 
@@ -150,8 +150,8 @@ export class DndItem implements OnDestroy {
 
 	private canStartDragging(event: MouseEvent): boolean {
 		const mouse = this.getRelativeMousePosition(event);
-		return Math.abs(this.clickPosition.x - mouse.x) > this.dndDragThreshold
-				|| Math.abs(this.clickPosition.y - mouse.y) > this.dndDragThreshold;
+		return Math.abs(this.clickPosition.x - mouse.x) > this.dragThreshold
+				|| Math.abs(this.clickPosition.y - mouse.y) > this.dragThreshold;
 	}
 
 	private updatePosition(event: MouseEvent): void {

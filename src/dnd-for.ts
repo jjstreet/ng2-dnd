@@ -86,7 +86,7 @@ export class DndFor implements DoCheck {
 
 	private getIterable(): any {
 		if (this.dndContainer) {
-			return this.dndContainer.dndItems;
+			return this.dndContainer.items;
 		}
 		return undefined;
 	}
